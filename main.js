@@ -7,9 +7,10 @@ const firstPlayer = {
   hp: 100,
   img: 'http://reactmarathon-api.herokuapp.com/assets/scorpion.gif',
   weapon: ['Ninjato', 'Kunai'],
-  attack: function() {
-    console.log(firstPlayer.name + ' Fight...');
-  }
+  elHP,
+  changeHP,
+  renderHP,
+  attack,
 };
 
 const secondPlayer = {
@@ -18,9 +19,10 @@ const secondPlayer = {
   hp: 100,
   img: 'http://reactmarathon-api.herokuapp.com/assets/subzero.gif',
   weapon: ['Sword', 'Scepter'],
-  attack: function() {
-    console.log(secondPlayer.name + ' Fight...');
-  }
+  elHP,
+  changeHP,
+  renderHP,
+  attack,
 };
 
 function createElement(tag, className) {
@@ -31,6 +33,26 @@ function createElement(tag, className) {
   }
 
   return $tag;
+}
+
+function attack() {
+  console.log(this.name + ' Fight...');
+}
+
+function elHP() {
+  return document.querySelector('.player' + this.player + ' .life');
+}
+
+function changeHP(randomHP) {
+  this.hp -= randomHP;
+
+  if (this.hp <= 0) {
+    this.hp = 0;
+  }
+}
+
+function renderHP() {
+  this.elHP().style.width = this.hp + '%';
 }
 
 function createPlayer(playerData) {
@@ -70,24 +92,30 @@ function showResult(name) {
   return $resultTitle;
 }
 
-function changeHP(player) {
-  const $playerLife = document.querySelector('.player' + player.player + ' .life');
+function createReloadButton() {
+  const $reloadWrap = createElement('div', 'reloadWrap');
+  const $reloadButton = createElement('button', 'button');
 
-  player.hp -= getRandomHP(20);
+  $reloadButton.innerText = 'Restart';
 
-  if (player.hp <= 0) {
-    player.hp = 0;
-  }
+  $reloadButton.addEventListener('click', function() {
+    window.location.reload();
+  });
 
-  $playerLife.style.width = player.hp + '%';
+  $reloadWrap.appendChild($reloadButton);
+  $arenas.appendChild($reloadWrap);
 }
 
 $randomButton.addEventListener('click', function() {
-  changeHP(firstPlayer);
-  changeHP(secondPlayer);
+  firstPlayer.changeHP(getRandomHP(20));
+  firstPlayer.renderHP();
+
+  secondPlayer.changeHP(getRandomHP(20));
+  secondPlayer.renderHP();
 
   if (firstPlayer.hp === 0 || secondPlayer.hp === 0) {
     $randomButton.disabled = true;
+    createReloadButton();
   }
 
   if (firstPlayer.hp === 0 && firstPlayer.hp < secondPlayer.hp) {
