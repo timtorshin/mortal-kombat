@@ -1,5 +1,13 @@
 const $arenas = document.querySelector('.arenas');
-const $randomButton = document.querySelector('.button');
+const $formFight = document.querySelector('.control');
+
+const HIT = {
+  head: 30,
+  body: 25,
+  foot: 20,
+};
+
+const ATTACK = ['head', 'body', 'foot'];
 
 const firstPlayer = {
   player: 1,
@@ -106,15 +114,41 @@ function createReloadButton() {
   $arenas.appendChild($reloadWrap);
 }
 
-$randomButton.addEventListener('click', function() {
-  firstPlayer.changeHP(getRandomHP(20));
-  firstPlayer.renderHP();
+$arenas.appendChild(createPlayer(firstPlayer));
+$arenas.appendChild(createPlayer(secondPlayer));
 
-  secondPlayer.changeHP(getRandomHP(20));
-  secondPlayer.renderHP();
+function enemyAttack() {
+  const hit = ATTACK[getRandomHP(3) - 1];
+  const defence = ATTACK[getRandomHP(3) - 1];
 
+  return {
+    value: getRandomHP(HIT[hit]),
+    hit,
+    defence,
+  };
+}
+
+function playerAttack() {
+  const attack = {};
+
+  for (let item of $formFight) {
+    if (item.checked && item.name === 'hit') {
+      attack.value = getRandomHP(HIT[item.value]);
+      attack.hit = item.value;
+    }
+
+    if (item.checked && item.name === 'defence') {
+      attack.defence = item.value;
+    }
+
+    item.checked = false;
+  }
+
+  return attack;
+}
+
+function fightResult() {
   if (firstPlayer.hp === 0 || secondPlayer.hp === 0) {
-    $randomButton.disabled = true;
     createReloadButton();
   }
 
@@ -125,7 +159,23 @@ $randomButton.addEventListener('click', function() {
   } else if (firstPlayer.hp === 0 && secondPlayer.hp === 0) {
     $arenas.appendChild(showResult());
   }
-});
+}
 
-$arenas.appendChild(createPlayer(firstPlayer));
-$arenas.appendChild(createPlayer(secondPlayer));
+$formFight.addEventListener('submit', function(evt) {
+  evt.preventDefault();
+
+  const enemy = enemyAttack();
+  const player = playerAttack();
+
+  if (enemy.hit !== player.defence) {
+    firstPlayer.changeHP(enemy.value);
+    firstPlayer.renderHP();
+  }
+
+  if (player.hit !== enemy.defence) {
+    secondPlayer.changeHP(player.value);
+    secondPlayer.renderHP();
+  }
+
+  fightResult();
+});
