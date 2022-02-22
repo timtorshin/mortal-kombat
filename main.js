@@ -203,15 +203,15 @@ function generateLogs(type, firstPlayer, secondPlayer, damageCounter) {
       break;
 
     case 'end':
-      text = LOGS[type][getRandom(LOGS[type].length - 1)].replace('[playerWins]', firstPlayer.name).replace('[playerLose]', secondPlayer.name);
+      text = LOGS[type][getRandom(LOGS[type].length) - 1].replace('[playerWins]', firstPlayer.name).replace('[playerLose]', secondPlayer.name);
       break;
 
     case 'hit':
-      text = `${getCurrentTime()} - ${LOGS[type][getRandom(LOGS[type].length - 1)].replace('[playerKick]', firstPlayer.name).replace('[playerDefence]', secondPlayer.name)} -${damageCounter} [${secondPlayer.hp}/100]`;
+      text = `${getCurrentTime()} - ${LOGS[type][getRandom(LOGS[type].length) - 1].replace('[playerKick]', firstPlayer.name).replace('[playerDefence]', secondPlayer.name)} -${damageCounter} [${secondPlayer.hp}/100]`;
       break;
 
     case 'defence':
-      text = `${getCurrentTime()} - ${LOGS[type][getRandom(LOGS[type].length - 1)].replace('[playerKick]', secondPlayer.name).replace('[playerDefence]', firstPlayer.name)}`;
+      text = `${getCurrentTime()} - ${LOGS[type][getRandom(LOGS[type].length) - 1].replace('[playerKick]', secondPlayer.name).replace('[playerDefence]', firstPlayer.name)}`;
       break;
 
     case 'draw':
